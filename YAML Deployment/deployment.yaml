@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo-deployment
+  name: demo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-deployment
+  template:
+    metadata:
+      labels:
+        app: demo-deployment
+    spec:
+      containers:
+        - image: quay.io/freedomben/basic-ocp-demo:latest
+          name: demo-deployment
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8580
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /healthz
+              port: 8580
+            initialDelaySeconds: 5
+            periodSeconds: 1
+          env:
+            - name: BASIC_OCP_DEMO_ENV
+              value: master
